@@ -7,10 +7,9 @@ DataIngestionConfig = namedtuple("DataIngestionConfig", ["from_date",
                                                          "download_dir",
                                                          "file_name",
                                                         "feeature_store_dir",
-                                                        "download_dir",
                                                         "failed_dir",
                                                         "metadata_file_path",
 
 
 
-)
+])
