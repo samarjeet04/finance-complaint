@@ -1,5 +1,7 @@
 from collections import namedtuple
 
+from collections import namedtuple
+
 TrainingPipelineConfig = namedtuple("PipelineConfig", ["pipeline_name", "artifact_dir"])
 DataIngestionConfig = namedtuple("DataIngestionConfig", ["from_date",
                                                          "to_date",
@@ -8,8 +10,6 @@ DataIngestionConfig = namedtuple("DataIngestionConfig", ["from_date",
                                                          "file_name",
                                                         "feeature_store_dir",
                                                         "failed_dir",
-                                                        "metadata_file_path",
+                                                        "metadata_file_path",])
 
-
-
-])
+DataValidationConfig = namedtuple("DataValidationConfig",["accepted_data_dir", "rejected_data_dir", "file_name"])

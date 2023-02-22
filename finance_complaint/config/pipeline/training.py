@@ -1,23 +1,29 @@
-import os,sys
 from time import strftime
-import requests
-from datetime import datetime
-from finance_complaint.constant.training_pipeline_config import data_ingestion
 from finance_complaint.constant.training_pipeline_config.data_ingestion import DATA_INGESTION_DATA_SOURCE_URL, DATA_INGESTION_DIR, DATA_INGESTION_DOWNLOADED_DATA_DIR, DATA_INGESTION_FAILED_DIR, DATA_INGESTION_FEATURE_STORE_DIR, DATA_INGESTION_FILE_NAME, DATA_INGESTION_METADATA_FILE_NAME, DATA_INGESTION_MIN_START_DATE
-from finance_complaint.exception import FinanceException
-from finance_complaint.logger import logger
-from finance_complaint.entity.config_entity import TrainingPipelineConfig,DataIngestionConfig
-from finance_complaint.entity.metdata_entity import DataIngestionMetadata
+from finance_complaint.constant.training_pipeline_config.data_validation import DATA_VALIDATION_ACCEPTED_DIR, DATA_VALIDATION_DIR, DATA_VALIDATION_FILE_NAME, DATA_VALIDATION_REJECTED_DIR
+from finance_complaint.entity.config_entity import DataIngestionConfig, TrainingPipelineConfig, DataValidationConfig
 from finance_complaint.constant.training_pipeline_config import *
 from finance_complaint.constant import TIMESTAMP
+from finance_complaint.logger import logger
+from finance_complaint.exception import FinanceException
+import os, sys
+import requests
+import json
+from datetime import datetime
+from finance_complaint.entity.metdata_entity import DataIngestionMetadata
+
+
 
 class FinanceConfig:
 
     def __init__(self, pipeline_name=PIPELINE_NAME, timestamp=TIMESTAMP):
+        """
+        Organization: iNeuron Intelligence Private Limited
+        """
         self.timestamp = timestamp
         self.pipeline_name = pipeline_name
         self.pipeline_config = self.get_pipeline_config()
-    
+
     def get_pipeline_config(self) -> TrainingPipelineConfig:
         """
         This function will provide pipeline config information
@@ -33,37 +39,40 @@ class FinanceConfig:
             return pipeline_config
         except Exception as e:
             raise FinanceException(e, sys)
-    
-    def get_data_ingestion_config(self, from_date=DATA_INGESTION_MIN_START_DATE, to_date=None)\
-        ->DataIngestionConfig:
+
+    def get_data_ingestion_config(self, from_date=DATA_INGESTION_MIN_START_DATE, to_date=None) \
+            -> DataIngestionConfig:
 
         """
-
-        from data cannot be less than min start date
-        if to date is not provided atomatically current date will become the to_date
+        from date can not be less than min start date
+        if to_date is not provided automatically current date will become to date
         """
+
         min_start_date = datetime.strptime(DATA_INGESTION_MIN_START_DATE, "%Y-%m-%d")
         from_date_obj = datetime.strptime(from_date, "%Y-%m-%d")
-        if from_date_obj<min_start_date:
-            from_date_obj=DATA_INGESTION_MIN_START_DATE
+        if from_date_obj < min_start_date:
+            from_date = DATA_INGESTION_MIN_START_DATE
         if to_date is None:
-            to_date=datetime.now().strftime("%Y-%m-%d")
+            to_date = datetime.now().strftime("%Y-%m-%d")
 
         """
         master directory for data ingestion
         we will store metadata information and ingested file to avoid redundant download
         """
+        data_ingestion_master_dir = os.path.join(self.pipeline_config.artifact_dir,
+                                                 DATA_INGESTION_DIR)
 
-        data_ingestion_master_dir = os.path.join(self.pipeline_config.artifact_dir, DATA_INGESTION_DIR)
+        # time based directory for each run
         data_ingestion_dir = os.path.join(data_ingestion_master_dir,
                                           self.timestamp)
 
         metadata_file_path = os.path.join(data_ingestion_master_dir, DATA_INGESTION_METADATA_FILE_NAME)
+
         data_ingestion_metadata = DataIngestionMetadata(metadata_file_path=metadata_file_path)
 
         if data_ingestion_metadata.is_metadata_file_present:
-            metadata_info=data_ingestion_metadata.get_metadata_info()
-            from_date=metadata_info.to_date
+            metadata_info = data_ingestion_metadata.get_metadata_info()
+            from_date = metadata_info.to_date
 
         data_ingestion_config = DataIngestionConfig(
             from_date=from_date,
@@ -79,6 +88,26 @@ class FinanceConfig:
         )
         logger.info(f"Data ingestion config: {data_ingestion_config}")
         return data_ingestion_config
+
+    def get_data_validation_config(self) -> DataValidationConfig:
+        try:
+            data_validation_dir = os.path.join(self.pipeline_config.artifact_dir,
+                                               DATA_VALIDATION_DIR, self.timestamp)
+
+            accepted_data_dir = os.path.join(data_validation_dir, DATA_VALIDATION_ACCEPTED_DIR)
+            rejected_data_dir = os.path.join(data_validation_dir, DATA_VALIDATION_REJECTED_DIR)
+
+            data_validation_config = DataValidationConfig(
+                accepted_data_dir=accepted_data_dir,
+                rejected_data_dir=rejected_data_dir,
+                file_name=DATA_VALIDATION_FILE_NAME
+            )
+
+            logger.info(f"Data preprocessing config: {data_validation_config}")
+
+            return data_validation_config
+        except Exception as e:
+            raise FinanceException(e, sys)
 
 
 
