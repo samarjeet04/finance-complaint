@@ -6,3 +6,5 @@ DataIngestionArtifact = namedtuple("DataIngestionArtifact",
 
 DataValidationArtifact = namedtuple("DataValidationArtifact",
                                     ["accepted_dir", "rejected_dir"])
+
+DataTransfomrationArtifact = namedtuple("DataTransformationArtifact", ["transformed_train_file_path", "transformed_test_file_path", "exported_pipeline_file_path"])

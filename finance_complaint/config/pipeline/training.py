@@ -1,8 +1,9 @@
 from time import strftime
-from finance_complaint.constant.training_pipeline_config.data_ingestion import DATA_INGESTION_DATA_SOURCE_URL, DATA_INGESTION_DIR, DATA_INGESTION_DOWNLOADED_DATA_DIR, DATA_INGESTION_FAILED_DIR, DATA_INGESTION_FEATURE_STORE_DIR, DATA_INGESTION_FILE_NAME, DATA_INGESTION_METADATA_FILE_NAME, DATA_INGESTION_MIN_START_DATE
-from finance_complaint.constant.training_pipeline_config.data_validation import DATA_VALIDATION_ACCEPTED_DIR, DATA_VALIDATION_DIR, DATA_VALIDATION_FILE_NAME, DATA_VALIDATION_REJECTED_DIR
-from finance_complaint.entity.config_entity import DataIngestionConfig, TrainingPipelineConfig, DataValidationConfig
 from finance_complaint.constant.training_pipeline_config import *
+from finance_complaint.constant.training_pipeline_config.data_ingestion import DATA_INGESTION_DATA_SOURCE_URL, DATA_INGESTION_DIR, DATA_INGESTION_DOWNLOADED_DATA_DIR, DATA_INGESTION_FAILED_DIR, DATA_INGESTION_FEATURE_STORE_DIR, DATA_INGESTION_FILE_NAME, DATA_INGESTION_METADATA_FILE_NAME, DATA_INGESTION_MIN_START_DATE
+from finance_complaint.constant.training_pipeline_config.data_tramsformation import DATA_TRANSFORMATION_DIR, DATA_TRANSFORMATION_FILE_NAME, DATA_TRANSFORMATION_PIPELINE_DIR, DATA_TRANSFORMATION_TEST_DIR, DATA_TRANSFORMATION_TEST_SIZE, DATA_TRANSFORMATION_TRAIN_DIR
+from finance_complaint.constant.training_pipeline_config.data_validation import DATA_VALIDATION_ACCEPTED_DIR, DATA_VALIDATION_DIR, DATA_VALIDATION_FILE_NAME, DATA_VALIDATION_REJECTED_DIR
+from finance_complaint.entity.config_entity import DataIngestionConfig, TrainingPipelineConfig, DataValidationConfig, DataTransformationConfig
 from finance_complaint.constant import TIMESTAMP
 from finance_complaint.logger import logger
 from finance_complaint.exception import FinanceException
@@ -109,5 +110,26 @@ class FinanceConfig:
         except Exception as e:
             raise FinanceException(e, sys)
 
+    
+    def get_data_tranformation_config(self)->DataTransformationConfig:
+        try:
+            data_transformation_dir = os.path.join(self.pipeline_config.artifact_dir,
+                                                     DATA_TRANSFORMATION_DIR, self.timestamp)
+            transformed_train_data_dir = os.path.join(data_transformation_dir, DATA_TRANSFORMATION_TRAIN_DIR)
+            transformed_test_data_dir = os.path.join(data_transformation_dir, DATA_TRANSFORMATION_TEST_DIR)
+
+            export_pipeline_dir = os.path.join(data_transformation_dir, DATA_TRANSFORMATION_PIPELINE_DIR)
+
+            data_transformation_config = DataTransformationConfig(
+                file_name=DATA_TRANSFORMATION_FILE_NAME, 
+                export_pipeline_dir=export_pipeline_dir,
+                transformd_train_dir=transformed_train_data_dir,
+                transformed_test_dir=transformed_test_data_dir,
+                test_size=DATA_TRANSFORMATION_TEST_SIZE
+            )
+            logger.info(f"Data Tranformation config: {data_transformation_config}")
+            return data_transformation_config
+        except Exception as e:
+            raise FinanceException(e,sys)
 
 
