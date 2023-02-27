@@ -1,17 +1,19 @@
 import os
-import sys
+
 from finance_complaint.entity.schema import FinanceDataSchema
+import sys
 from pyspark.ml.feature import StandardScaler, VectorAssembler, OneHotEncoder, StringIndexer, Imputer
 from pyspark.ml.pipeline import Pipeline
-from pyspark.sql import DataFrame
+
+from finance_complaint.config.spark_manager import spark_session
 from finance_complaint.exception import FinanceException
 from finance_complaint.logger import logger
 from finance_complaint.entity.artifact_entity import DataValidationArtifact, DataTransfomrationArtifact
 from finance_complaint.entity.config_entity import DataTransformationConfig
+from pyspark.sql import DataFrame
 from finance_complaint.ml.feature_transformers import FrequencyImputer, DerivedFeatureGenerator
 from pyspark.ml.feature import IDF, Tokenizer, HashingTF
 from pyspark.sql.functions import col, rand
-from finance_complaint.config.spark_manager import spark_session
 
 
 class DataTransformation():
@@ -180,7 +182,7 @@ class DataTransformation():
             print(transformed_test_dataframe.count(), len(transformed_trained_dataframe.columns))
             transformed_test_dataframe.write.parquet(transformed_test_data_file_path)
 
-            data_tf_artifact = DataTransfomrationArtifact(
+            data_tf_artifact = DataTransformationArtifact(
                 transformed_train_file_path=transformed_train_data_file_path,
                 transformed_test_file_path=transformed_test_data_file_path,
                 exported_pipeline_file_path=export_pipeline_file_path,

@@ -1,9 +1,11 @@
+from email.mime import base
 from time import strftime
 from finance_complaint.constant.training_pipeline_config import *
 from finance_complaint.constant.training_pipeline_config.data_ingestion import DATA_INGESTION_DATA_SOURCE_URL, DATA_INGESTION_DIR, DATA_INGESTION_DOWNLOADED_DATA_DIR, DATA_INGESTION_FAILED_DIR, DATA_INGESTION_FEATURE_STORE_DIR, DATA_INGESTION_FILE_NAME, DATA_INGESTION_METADATA_FILE_NAME, DATA_INGESTION_MIN_START_DATE
-from finance_complaint.constant.training_pipeline_config.data_tramsformation import DATA_TRANSFORMATION_DIR, DATA_TRANSFORMATION_FILE_NAME, DATA_TRANSFORMATION_PIPELINE_DIR, DATA_TRANSFORMATION_TEST_DIR, DATA_TRANSFORMATION_TEST_SIZE, DATA_TRANSFORMATION_TRAIN_DIR
+from finance_complaint.constant.training_pipeline_config.data_transformation import DATA_TRANSFORMATION_DIR, DATA_TRANSFORMATION_FILE_NAME, DATA_TRANSFORMATION_PIPELINE_DIR, DATA_TRANSFORMATION_TEST_DIR, DATA_TRANSFORMATION_TEST_SIZE, DATA_TRANSFORMATION_TRAIN_DIR
 from finance_complaint.constant.training_pipeline_config.data_validation import DATA_VALIDATION_ACCEPTED_DIR, DATA_VALIDATION_DIR, DATA_VALIDATION_FILE_NAME, DATA_VALIDATION_REJECTED_DIR
-from finance_complaint.entity.config_entity import DataIngestionConfig, TrainingPipelineConfig, DataValidationConfig, DataTransformationConfig
+from finance_complaint.constant.training_pipeline_config.model_trainer import MODEL_TRAINER_BASE_ACCURACY, MODEL_TRAINER_DIR, MODEL_TRAINER_LABEL_INDEXER_DIR, MODEL_TRAINER_MODEL_METRIC_NAMES, MODEL_TRAINER_TRAINED_MODEL_DIR, MODEL_TRAINER_MODEL_NAME
+from finance_complaint.entity.config_entity import DataIngestionConfig, TrainingPipelineConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig
 from finance_complaint.constant import TIMESTAMP
 from finance_complaint.logger import logger
 from finance_complaint.exception import FinanceException
@@ -129,6 +131,26 @@ class FinanceConfig:
             )
             logger.info(f"Data Tranformation config: {data_transformation_config}")
             return data_transformation_config
+        except Exception as e:
+            raise FinanceException(e,sys)
+
+
+    def get_model_trainer_config(self)->ModelTrainerConfig:
+        try:
+            model_trainer_dir = os.path.join(self.pipeline_config.artifact_dir,
+                                             MODEL_TRAINER_DIR, self.timestamp)
+            trained_model_file_path = os.path.join(model_trainer_dir, MODEL_TRAINER_TRAINED_MODEL_DIR, MODEL_TRAINER_MODEL_NAME)
+            label_indexer_model_dir = os.path.join(model_trainer_dir, MODEL_TRAINER_LABEL_INDEXER_DIR)
+
+            model_trainer_config = ModelTrainerConfig(
+                base_accuracy=MODEL_TRAINER_BASE_ACCURACY,
+                trained_model_file_path=trained_model_file_path,
+                metric_list=MODEL_TRAINER_MODEL_METRIC_NAMES,
+                label_indexer_model_dir=label_indexer_model_dir
+            )
+
+            logger.info(f"Model Trainer Config: {model_trainer_config}")
+            return model_trainer_config
         except Exception as e:
             raise FinanceException(e,sys)
 
