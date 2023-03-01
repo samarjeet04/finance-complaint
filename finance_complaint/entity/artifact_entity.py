@@ -14,3 +14,31 @@ PartialModelTrainerRefArtifact = namedtuple("PartialModelTrainerRefArtifact", ["
 
 PartialModelTrainerMetricrtifact = namedtuple("PartialModelTrainerMetricArtifact", ["f1_score", "precision_score", "recall_score"])
 
+class ModelTrainerArtifact:
+
+    def __init__(self, model_trainer_ref_artifact: PartialModelTrainerRefArtifact,
+                 model_trainer_train_metric_artifact: PartialModelTrainerMetricrtifact,
+                 model_trainer_test_metric_artifact: PartialModelTrainerMetricrtifact
+                 ):
+        self.model_trainer_ref_artifact = model_trainer_ref_artifact
+        self.model_trainer_train_metric_artifact = model_trainer_train_metric_artifact
+        self.model_trainer_test_metric_artifact = model_trainer_test_metric_artifact
+
+    @staticmethod
+    def construct_object(**kwargs):
+        model_trainer_ref_artifact=PartialModelTrainerRefArtifact(**(kwargs['model_trainer_ref_artifact']))
+        model_trainer_train_metric_artifact=PartialModelTrainerMetricrtifact(**(kwargs['model_trainer_train_metric_artifact']))
+        model_trainer_test_metric_artifact=PartialModelTrainerMetricrtifact(**(kwargs['model_trainer_test_metric_artifact']))
+        model_trainer_artifact = ModelTrainerArtifact(model_trainer_ref_artifact,model_trainer_train_metric_artifact,model_trainer_test_metric_artifact)
+        return model_trainer_artifact
+
+
+    def _asdict(self):
+        try:
+            response = dict()
+            response['model_trainer_ref_artifact'] = self.model_trainer_ref_artifact._asdict()
+            response['model_trainer_train_metric_artifact'] = self.model_trainer_train_metric_artifact._asdict()
+            response['model_trainer_test_metric_artifact'] = self.model_trainer_test_metric_artifact._asdict()
+            return response
+        except Exception as e:
+            raise e
