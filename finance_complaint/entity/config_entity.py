@@ -1,7 +1,5 @@
 from collections import namedtuple
 
-from collections import namedtuple
-
 TrainingPipelineConfig = namedtuple("PipelineConfig", ["pipeline_name", "artifact_dir"])
 DataIngestionConfig = namedtuple("DataIngestionConfig", ["from_date",
                                                          "to_date",
@@ -18,3 +16,7 @@ DataTransformationConfig = namedtuple('DataTransformationConfig', ['file_name', 
 
 ModelTrainerConfig = namedtuple("ModeltrainerConfig", ["base_accuracy", "trained_model_file_path",
                                                         "metric_list", "label_indexer_model_dir"])
+
+ModelEvaluationConfig = namedtuple("ModelEvaluationConfig", ["model_evaluation_report_file_path", 
+                                                               "metric_list", "model_dir", "bucket_name",
+                                                               "threshold"])
