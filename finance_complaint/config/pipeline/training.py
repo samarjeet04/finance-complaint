@@ -5,15 +5,15 @@ from finance_complaint.constant.training_pipeline_config.data_ingestion import D
 from finance_complaint.constant.training_pipeline_config.data_transformation import DATA_TRANSFORMATION_DIR, DATA_TRANSFORMATION_FILE_NAME, DATA_TRANSFORMATION_PIPELINE_DIR, DATA_TRANSFORMATION_TEST_DIR, DATA_TRANSFORMATION_TEST_SIZE, DATA_TRANSFORMATION_TRAIN_DIR
 from finance_complaint.constant.training_pipeline_config.data_validation import DATA_VALIDATION_ACCEPTED_DIR, DATA_VALIDATION_DIR, DATA_VALIDATION_FILE_NAME, DATA_VALIDATION_REJECTED_DIR
 from finance_complaint.constant.training_pipeline_config.model_trainer import MODEL_TRAINER_BASE_ACCURACY, MODEL_TRAINER_DIR, MODEL_TRAINER_LABEL_INDEXER_DIR, MODEL_TRAINER_MODEL_METRIC_NAMES, MODEL_TRAINER_TRAINED_MODEL_DIR, MODEL_TRAINER_MODEL_NAME
-from finance_complaint.entity.config_entity import DataIngestionConfig, TrainingPipelineConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig
+from finance_complaint.entity.config_entity import DataIngestionConfig, TrainingPipelineConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig, ModelPusherConfig
 from finance_complaint.constant import TIMESTAMP
 from finance_complaint.logger import logger
 from finance_complaint.exception import FinanceException
 import os, sys
 import requests
-import json
 from datetime import datetime
 from finance_complaint.entity.metdata_entity import DataIngestionMetadata
+from finance_complaint.constant.model import S3_MODEL_DIR_KEY, S3_MODEL_BUCKET_NAME
 
 
 
@@ -151,6 +151,16 @@ class FinanceConfig:
 
             logger.info(f"Model Trainer Config: {model_trainer_config}")
             return model_trainer_config
+        except Exception as e:
+            raise FinanceException(e,sys)
+
+    
+    def get_model_pusher(self)->ModelPusherConfig:
+        try:
+            model_pusher_config = ModelPusherConfig(
+                model_dir=S3_MODEL_DIR_KEY,
+                bucket_name=S3_MODEL_BUCKET_NAME
+            )
         except Exception as e:
             raise FinanceException(e,sys)
 

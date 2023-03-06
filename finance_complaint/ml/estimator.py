@@ -26,7 +26,7 @@ class CloudEstimator(ABC):
             key: cloud storage key where model is location
         Returns: return List of all model cloud storage key path
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def get_latest_model_path(self, key) -> str:
@@ -36,7 +36,7 @@ class CloudEstimator(ABC):
             key:
         Returns: complete key path of cloud storage to download model
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def decompress_model(self, zip_model_file_path, extract_dir):
@@ -47,7 +47,7 @@ class CloudEstimator(ABC):
             extract_dir: model will be extracted at extracted dir
         Returns:
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def compress_model_dir(self, model_dir):
@@ -59,7 +59,7 @@ class CloudEstimator(ABC):
             model_dir: Model dir is directory to compress
         Returns:
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def is_model_available(self, key) -> bool:
@@ -69,7 +69,7 @@ class CloudEstimator(ABC):
             key: cloud storage key where model is location
         Returns:
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def save(self, model_dir, key):
@@ -81,7 +81,7 @@ class CloudEstimator(ABC):
             key: cloud storage key where model will be saved
         Returns:
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def load(self, key, extract_dir) -> str:
@@ -93,7 +93,7 @@ class CloudEstimator(ABC):
             extract_dir:
         Returns: Model Directory
         """
-        pass
+        raise NotImplementedError()
 
     @abstractmethod
     def transform(self, df) -> DataFrame:
@@ -103,7 +103,7 @@ class CloudEstimator(ABC):
             df: Input dataframe
         Returns:
         """
-        pass
+        raise NotImplementedError()
 
 
 class S3Estimator(CloudEstimator):

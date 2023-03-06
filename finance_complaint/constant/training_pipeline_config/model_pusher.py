@@ -1,0 +1,1 @@
+MODEL_PUDHER_MODEL_NAME = "finance-complaint-estimator"

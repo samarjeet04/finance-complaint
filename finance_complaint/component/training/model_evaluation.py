@@ -11,7 +11,7 @@ from finance_complaint.utils import get_score
 from finance_complaint.config.spark_manager import spark_session
 from pyspark.ml.feature import StringIndexerModel
 from pyspark.sql.types import StringType, FloatType, StructType, StructField
-from finance_complaint.entity.estimator import S3FinanceEstimator
+from finance_complaint.ml.estimator import S3FinanceEstimator
 from finance_complaint.data_access.model_eval_artifact import ModelEvaluationArtifactData
 
 class ModelEvaluationArtifact:
