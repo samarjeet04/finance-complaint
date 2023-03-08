@@ -6,7 +6,6 @@ from finance_complaint.entity.artifact_entity import ModelTrainerArtifact, Model
 from finance_complaint.entity.config_entity import ModelPusherConfig
 from pyspark.ml.pipeline import PipelineModel
 from finance_complaint.ml.estimator import S3FinanceEstimator
-from statistics import mode
 
 class ModelPusher:
     def __init__(self,
