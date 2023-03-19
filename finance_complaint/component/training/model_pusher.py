@@ -34,3 +34,4 @@ class ModelPusher:
             return model_pusher_artifact
         except Exception as e:
             raise FinanceException(e,sys)
+        
