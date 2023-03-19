@@ -1,2 +1,2 @@
 from finance_complaint.pipeline.training import  TrainingPipeline
-from finance_complaint.pipeline.prediction import PredictionPipeline
+from finance_complaint.pipeline.prediciton import PredictionPipeline
