@@ -14,7 +14,7 @@ from pyspark.sql.types import StringType, FloatType, StructType, StructField
 from finance_complaint.ml.estimator import S3FinanceEstimator
 from finance_complaint.data_access.model_eval_artifact import ModelEvaluationArtifactData
 
-class ModelEvaluationArtifact:
+class ModelEvaluation:
     def __init(self, data_validation_artifact:DataValidationArtifact,
                      model_trainer_artifact:ModelTrainerArtifact,
                      model_eval_config:ModelEvaluationConfig,
