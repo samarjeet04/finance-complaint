@@ -22,7 +22,7 @@ with DAG(
     # [END default_args]
     description='Machine learning Spark Project',
     schedule_interval="@weekly",
-    start_date=pendulum.datetime(2022, 11, 20, tz="UTC"),
+    start_date=pendulum.datetime(2023, 3, 26, tz="UTC"),
     catchup=False,
     tags=['example'],
 ) as dag:
@@ -39,16 +39,16 @@ with DAG(
     training_pipeline= TrainingPipeline(FinanceConfig())
 
     def data_ingestion(**kwargs):
-        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransfomrationArtifact,\
-        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricrtifact
+        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,\
+        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricArtifact
         ti = kwargs['ti']
         data_ingestion_artifact = training_pipeline.start_data_ingestion()
         print(data_ingestion_artifact)
         ti.xcom_push('data_ingestion_artifact', data_ingestion_artifact)
 
     def data_validation(**kwargs):
-        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransfomrationArtifact,\
-        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricrtifact
+        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,\
+        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricArtifact
         ti  = kwargs['ti']
         data_ingestion_artifact = ti.xcom_pull(task_ids="data_ingestion",key="data_ingestion_artifact")
         data_ingestion_artifact=DataIngestionArtifact(*(data_ingestion_artifact))
@@ -56,8 +56,8 @@ with DAG(
         ti.xcom_push('data_validation_artifact', data_validation_artifact)
 
     def data_transformation(**kwargs):
-        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransfomrationArtifact,\
-        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricrtifact
+        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,\
+        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricArtifact
         ti  = kwargs['ti']
 
         data_ingestion_artifact = ti.xcom_pull(task_ids="data_ingestion",key="data_ingestion_artifact")
@@ -71,8 +71,8 @@ with DAG(
         ti.xcom_push('data_transformation_artifact', data_transformation_artifact)
 
     def model_trainer(**kwargs):
-        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransfomrationArtifact,\
-        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricrtifact
+        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,\
+        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricArtifact
         ti  = kwargs['ti']
 
         data_transformation_artifact = ti.xcom_pull(task_ids="data_transformation",key="data_transformation_artifact")
@@ -83,8 +83,8 @@ with DAG(
         ti.xcom_push('model_trainer_artifact', model_trainer_artifact._asdict())
 
     def model_evaluation(**kwargs):
-        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransfomrationArtifact,\
-        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricrtifact
+        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,\
+        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricArtifact
         ti  = kwargs['ti']
         data_ingestion_artifact = ti.xcom_pull(task_ids="data_ingestion",key="data_ingestion_artifact")
         data_ingestion_artifact=DataIngestionArtifact(*(data_ingestion_artifact))
@@ -103,8 +103,8 @@ with DAG(
         ti.xcom_push('model_evaluation_artifact', model_evaluation_artifact.to_dict())
 
     def push_model(**kwargs):
-        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransfomrationArtifact,\
-        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricrtifact
+        from finance_complaint.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,\
+        ModelTrainerArtifact,ModelEvaluationArtifact,ModelPusherArtifact,PartialModelTrainerRefArtifact,PartialModelTrainerMetricArtifact
         ti  = kwargs['ti']
         model_evaluation_artifact = ti.xcom_pull(task_ids="model_evaluation",key="model_evaluation_artifact")
         model_evaluation_artifact=ModelEvaluationArtifact(*(model_evaluation_artifact))
