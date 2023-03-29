@@ -32,7 +32,7 @@ class DataTransformation():
 
     def read_data(self) -> DataFrame:
         try:
-            file_path = self.data_val_artifact.accepted_file_path
+            file_path = self.data_val_artifact.accepted_dir
             dataframe: DataFrame = spark_session.read.parquet(file_path)
             dataframe.printSchema()
             return dataframe
@@ -182,7 +182,7 @@ class DataTransformation():
             print(transformed_test_dataframe.count(), len(transformed_trained_dataframe.columns))
             transformed_test_dataframe.write.parquet(transformed_test_data_file_path)
 
-            data_tf_artifact = DataTransformationArtifact(
+            data_tf_artifact = DataTransfomrationArtifact(
                 transformed_train_file_path=transformed_train_data_file_path,
                 transformed_test_file_path=transformed_test_data_file_path,
                 exported_pipeline_file_path=export_pipeline_file_path,
